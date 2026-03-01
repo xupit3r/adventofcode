@@ -6,8 +6,11 @@ pom.xml
 pom.xml.asc
 *.jar
 *.class
-/.lein-*
-/.nrepl-port
-/.prepl-port
+.lein-*
+.nrepl-port
+.prepl-port
 .hgignore
 .hg/
+.me
+.clj-kondo
+.calva
