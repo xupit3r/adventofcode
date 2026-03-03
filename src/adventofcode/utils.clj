@@ -1,0 +1,25 @@
+(ns adventofcode.utils
+  (:require [clojure.string :refer [split-lines split]]))
+
+(defn get-txt [category year day]
+  (split-lines
+   (slurp
+    (format
+     "%s/%s/day%d.txt"
+     category
+     year
+     day))))
+
+(defn get-input [year day]
+  (get-txt "inputs" year day))
+
+(defn get-example [year day]
+  (get-txt "examples" year day))
+
+(defn parse-space [lines]
+  (map
+   #(split % #"\s+") lines))
+
+(defn pull-column [parsed col]
+  (map #(Integer/parseInt %)
+       (map #(nth % col) parsed)))
