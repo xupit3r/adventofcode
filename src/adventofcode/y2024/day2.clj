@@ -8,29 +8,42 @@
 (def input (get-input 2024 2))
 (def example (get-example 2024 2))
 
-(defn pairs [lines]
-  (map (fn [line]
-         (partition 2 1 line))
-       lines))
+(defn pairs [line] (partition 2 1 line))
 
-(defn diffs [lines]
-  (map (fn [line]
-         (map
-          #(apply - %)
-          line))
-       lines))
+(defn diffs [line] (map #(apply - %) line))
 
 (defn safe? [line]
-   (and (<= (apply max (map abs line)) 3)
-        (or
-         (every? #(> % 0) line)
-         (every? #(< % 0) line))))
+  (and (<= (apply max (map abs line)) 3)
+       (or
+        (every? #(> % 0) line)
+        (every? #(< % 0) line))))
 
-(->> input
-     (parse-space)
-     (parse-numbers)
-     (pairs)
-     (diffs)
-     (map safe?)
-     (filter true?)
-     (count))
+(defn build-combos [line]
+  (let [n (count line)]
+    (for [i (range n)]
+      (let [[head tail] (split-at i line)]
+        (concat head (rest tail))))))
+
+(defn any-safe? [combos]
+  (some
+   #(->> % pairs diffs safe?)
+   combos))
+
+(defn part1 [data]
+  (->> data
+       (parse-space)
+       (parse-numbers)
+       (map pairs)
+       (map diffs)
+       (map safe?)
+       (filter true?)
+       (count)))
+
+(defn part2 [data]
+  (->> data
+       (parse-space)
+       (parse-numbers)
+       (map build-combos)
+       (map any-safe?)
+       (filter true?)
+       (count)))
