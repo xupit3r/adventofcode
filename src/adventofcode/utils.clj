@@ -20,6 +20,14 @@
   (map
    #(split % #"\s+") lines))
 
+(defn parse-numbers [lines]
+  (map 
+   (fn [line]
+     (map
+      #(Integer/parseInt %)
+      line)) 
+   lines))
+
 (defn pull-column [parsed col]
   (map #(Integer/parseInt %)
        (map #(nth % col) parsed)))
