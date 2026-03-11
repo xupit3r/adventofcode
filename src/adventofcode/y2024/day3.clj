@@ -5,7 +5,6 @@
 (def input (get-input 2024 3))
 (def example (get-example 2024 3))
 
-
 (defn pull-relevants [line]
   (re-seq #"do\(\)|don't\(\)|mul\(\d+,\d+\)" line))
 

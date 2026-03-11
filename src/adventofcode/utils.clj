@@ -31,3 +31,12 @@
 (defn pull-column [parsed col]
   (map #(Integer/parseInt %)
        (map #(nth % col) parsed)))
+
+(defn build-grid [lines]
+  (to-array-2d (map #(split % #"") lines)))
+
+(defn in-bounds? [grid x y]
+  (and (> x -1)
+       (> y -1)
+       (< x (count grid))
+       (< y (count (nth grid 0)))))

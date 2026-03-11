@@ -1,7 +1,8 @@
 (ns adventofcode.y2024.day4
   (:require [adventofcode.utils :refer [get-example
-                                        get-input]]
-            [clojure.string :refer [split]]))
+                                        get-input
+                                        build-grid
+                                        in-bounds?]]))
 
 (def input (get-input 2024 4))
 (def example (get-example 2024 4))
@@ -14,15 +15,6 @@
                  [1 -1]
                  [-1 1]
                  [-1 -1]])
-
-(defn build-grid [lines]
-  (to-array-2d (map #(split % #"") lines)))
-
-(defn in-bounds? [grid x y]
-  (and (> x -1)
-       (> y -1)
-       (< x (count grid))
-       (< y (count (nth grid 0)))))
 
 (defn create-sequence [grid x y dx dy num]
   (apply
@@ -59,4 +51,8 @@
        flatten
        count-xmas))
 
-(part1 input)
+(defn part2 [data]
+  (->> data
+       build-grid))
+
+(part2 example)
