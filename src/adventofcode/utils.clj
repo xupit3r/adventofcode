@@ -40,3 +40,8 @@
        (> y -1)
        (< x (count grid))
        (< y (count (nth grid 0)))))
+
+(defn safe-lookup [grid x y]
+  (if (in-bounds? grid x y)
+    (aget grid x y)
+    "."))
