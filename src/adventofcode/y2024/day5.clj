@@ -10,14 +10,45 @@
 (defn filter-and-split [lines token exp]
   (->> lines
        (filter #(includes? % token))
-       (map #(split % exp))))
+       (map #(vec (split % exp)))))
+
+(defn identify-rules [rules update]
+  (let [su (set update)]
+    (filterv
+     (fn [[a b]]
+       (and (contains? su a)
+            (contains? su b))) 
+     rules)))
 
 (defn extract [lines]
-  {:pages (filter-and-split lines "|" #"\|")
-   :rules (filter-and-split lines "," #",")})
+  (let [updates (filter-and-split lines "," #",")
+        rules   (filter-and-split lines "|" #"\|")]
+    (map
+     #(hash-map
+       :rules (identify-rules rules %),
+       :update %)
+     updates)))
+
+(defn check-rules [{rules :rules update :update}]
+  {:rules rules
+   :update update
+   :correct (every?
+             #(< (.indexOf update (first %))
+                 (.indexOf update (second %)))
+             rules)})
+
+(defn check-correct [{correct :correct}] (true? correct))
+
+(defn find-medians [{update :update}]
+  (Integer/parseInt
+   (nth update (int (Math/floor (/ (count update) 2))))))
 
 (defn part1 [data]
   (->> data
-       extract))
+       extract
+       (map check-rules)
+       (filter check-correct)
+       (map find-medians)
+       (apply +)))
 
-(part1 example)
+(part1 input)
