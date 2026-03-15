@@ -38,8 +38,31 @@
              rules)})
 
 (defn check-correct [{correct :correct}] (true? correct))
+(defn check-incorrect [{correct :correct}] (false? correct))
 
-(defn find-medians [{update :update}]
+(defn contains-both [a b rules]
+  (filter
+   #(and (> (.indexOf % a) -1)
+         (> (.indexOf % b) -1)) rules))
+
+(defn lookup-indices [update rules]
+  (map (fn [[a b]]
+         [(.indexOf update a)
+          (.indexOf update b)]) rules))
+
+(defn rules-for [rules update]
+  (fn [a b]
+    (->> rules
+         (contains-both a b)
+         (lookup-indices update)
+         (map #(apply - %))
+         (apply -))))
+
+(defn rules-sort [{rules :rules update :update}]
+  (let [lookup (rules-for rules update)]
+    (sort lookup update)))
+
+(defn find-medians [update]
   (Integer/parseInt
    (nth update (int (Math/floor (/ (count update) 2))))))
 
@@ -48,7 +71,17 @@
        extract
        (map check-rules)
        (filter check-correct)
+       (:update)
        (map find-medians)
        (apply +)))
 
-(part1 input)
+(defn part2 [data]
+  (->> data
+       extract
+       (map check-rules)
+       (filter check-incorrect)
+       (map rules-sort)
+       (map find-medians)
+       (apply +)))
+
+(part2 input)
